@@ -1,6 +1,8 @@
 "use client";
 import useAuth from "@/hooks/useAuth";
+import createJWT from "@/utils/createJWT";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -13,6 +15,9 @@ const SignupForm = () => {
     getValues,
     setValue,
   } = useForm();
+  const search = useSearchParams();
+  const from = search.get("redirectURL") || "/";
+  const { replace } = useRouter();
   const { createUser, profileUpdate } = useAuth();
   const uploadImage = async (event) => {
     const formData = new FormData();
@@ -44,12 +49,14 @@ const SignupForm = () => {
     const toastId = toast.loading("Loading...");
     try {
       await createUser(email, password);
+      await createJWT({ email });
       await profileUpdate({
         displayName: name,
         photoURL: photo,
       });
       toast.dismiss(toastId);
       toast.success("Sign up successful");
+      replace(from);
     } catch (error) {
       toast.dismiss(toastId);
       toast.error(error.message || "User not signed in");

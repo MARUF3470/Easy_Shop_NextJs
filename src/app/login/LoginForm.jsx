@@ -1,7 +1,9 @@
 "use client";
 
 import useAuth from "@/hooks/useAuth";
+import createJWT from "@/utils/createJWT";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -12,14 +14,20 @@ const LoginForm = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
+  const search = useSearchParams();
+  const from = search.get("redirectURL") || "/";
+  const { replace } = useRouter();
   const { signIn, googleLogin } = useAuth();
   const onSubmit = async (data) => {
     const { email, password } = data;
     const toastID = toast.loading("Loading...");
+
     try {
       const user = await signIn(email, password);
+      await createJWT({ email });
       toast.dismiss(toastID);
       toast.success("User login successfully");
+      replace(from);
     } catch (error) {
       toast.dismiss(toastID);
       toast.error(error.message || "User Login Faild");
@@ -28,9 +36,11 @@ const LoginForm = () => {
   const handleGoogleLogin = async () => {
     const toastID = toast.loading("Loading...");
     try {
-      const user = await googleLogin();
+      const { user } = await googleLogin();
+      await createJWT({ email: user.email });
       toast.dismiss(toastID);
       toast.success("User login successfully");
+      replace(from);
     } catch (error) {
       toast.dismiss(toastID);
       toast.error(error.message || "User Login Faild");

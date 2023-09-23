@@ -1,5 +1,4 @@
 "use client";
-
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -12,13 +11,26 @@ import useAuth from "@/hooks/useAuth";
 
 const Navbar = () => {
   const { theme, toggleTheme } = useTheme();
+  const { replace } = useRouter();
+  const path = usePathname();
   const { user, logout } = useAuth();
   const { uid, displayName, photoURL } = user || {};
   const navData = uid ? afterLoginNavData : beforeLoginNavData;
   const [navToggle, setNavToggle] = useState(false);
   const handleLogout = async () => {
-    await logout();
-    toast.success("You succcesfully logout from your account");
+    try {
+      await logout();
+      toast.success("You succcesfully logout from your account");
+      const res = await fetch("/api/auth/logout", {
+        method: "POST",
+      });
+      const data = await res.json();
+      if (path.includes("dashboard") || path.includes("profile")) {
+        replace("/");
+      }
+    } catch (error) {
+      toast.success("You not succcesfully logout from your account");
+    }
   };
   return (
     <nav className="navbar sticky top-0 z-10 bg-slate-200 shadow-lg dark:bg-slate-900 lg:pr-3">
