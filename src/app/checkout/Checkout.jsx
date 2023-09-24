@@ -1,5 +1,3 @@
-"use client";
-
 import useCart from "@/hooks/useCart";
 import classNames from "@/utils/classNames";
 import { toast } from "react-hot-toast";
