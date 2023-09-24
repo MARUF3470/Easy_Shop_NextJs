@@ -8,6 +8,7 @@ import NavLink from "./NavLink";
 import { afterLoginNavData, beforeLoginNavData } from "@/data/navBarData";
 import useTheme from "@/hooks/useTheme";
 import useAuth from "@/hooks/useAuth";
+import useCart from "@/hooks/useCart";
 
 const Navbar = () => {
   const { theme, toggleTheme } = useTheme();
@@ -17,6 +18,11 @@ const Navbar = () => {
   const { uid, displayName, photoURL } = user || {};
   const navData = uid ? afterLoginNavData : beforeLoginNavData;
   const [navToggle, setNavToggle] = useState(false);
+  const { cart } = useCart();
+  const total = useMemo(
+    () => cart.reduce((pre, cur) => cur.price * cur.quantity + pre, 0),
+    [cart]
+  );
   const handleLogout = async () => {
     try {
       await logout();
@@ -75,7 +81,9 @@ const Navbar = () => {
                   d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
                 />
               </svg>
-              <span className="badge badge-sm indicator-item bg-primary text-white dark:text-gray-300"></span>
+              <span className="badge badge-sm indicator-item bg-primary text-white dark:text-gray-300">
+                {cart.length}
+              </span>
             </div>
           </label>
           <div
@@ -83,6 +91,8 @@ const Navbar = () => {
             className="card dropdown-content card-compact mt-3 w-52 bg-base-100 shadow"
           >
             <div className="card-body">
+              <span className="text-lg font-bold">{cart.length} Items</span>
+              <span className="text-info">Total: ${total.toFixed(2)}</span>
               <div className="card-actions">
                 <Link href="/checkout" className="block w-full">
                   <button className="btn-primary btn-block btn">

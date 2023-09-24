@@ -9,6 +9,14 @@ const nextConfig = {
             },
             {
                 protocol: "https",
+                hostname: "img-prod-cms-rt-microsoft-com.akamaized.net",
+            },
+            {
+                protocol: "https",
+                hostname: "www.digitaltrends.com",
+            },
+            {
+                protocol: "https",
                 hostname: "i.ibb.co",
             },
         ],

@@ -1,4 +1,6 @@
 import { MongoClient, ServerApiVersion } from "mongodb";
+import 'server-only'
+
 /**
  * @type {import("mongodb").Db}
  */
