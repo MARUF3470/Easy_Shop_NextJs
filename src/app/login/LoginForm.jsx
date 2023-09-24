@@ -1,5 +1,6 @@
 "use client";
 
+import GoogleLogin from "@/components/GoogleLogin";
 import useAuth from "@/hooks/useAuth";
 import createJWT from "@/utils/createJWT";
 import Link from "next/link";
@@ -25,19 +26,6 @@ const LoginForm = () => {
     try {
       const user = await signIn(email, password);
       await createJWT({ email });
-      toast.dismiss(toastID);
-      toast.success("User login successfully");
-      replace(from);
-    } catch (error) {
-      toast.dismiss(toastID);
-      toast.error(error.message || "User Login Faild");
-    }
-  };
-  const handleGoogleLogin = async () => {
-    const toastID = toast.loading("Loading...");
-    try {
-      const { user } = await googleLogin();
-      await createJWT({ email: user.email });
       toast.dismiss(toastID);
       toast.success("User login successfully");
       replace(from);
@@ -106,7 +94,7 @@ const LoginForm = () => {
         </Link>
       </p>
       <div className="divider mt-5">OR</div>
-      {/* <GoogleLogin from={from} /> */}
+      <GoogleLogin from={from} />
     </form>
   );
 };

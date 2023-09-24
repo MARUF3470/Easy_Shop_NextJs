@@ -1,4 +1,5 @@
 "use client";
+import GoogleLogin from "@/components/GoogleLogin";
 import useAuth from "@/hooks/useAuth";
 import createJWT from "@/utils/createJWT";
 import Link from "next/link";
@@ -170,7 +171,7 @@ const SignupForm = () => {
         </Link>
       </p>
       <div className="divider mt-5">OR</div>
-      {/* <GoogleLogin from={from} /> */}
+      <GoogleLogin from={from} />
     </form>
   );
 };
